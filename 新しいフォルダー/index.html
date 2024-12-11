@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TIMONEY</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+        }
+        header {
+            background-color: #8B0000;
+            color: white;
+            text-align: center;
+            padding: 1rem;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .barcode-container {
+            background-color: #f8d7da;
+            padding: 20px;
+            margin: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            position: relative;
+        }
+        .barcode-container img {
+            width: 250px;
+            height: auto;
+        }
+        #toggle-barcode {
+            position: absolute;
+            top: 50%;
+            right: 10px;
+            transform: translateY(-50%);
+            background-color: transparent;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+        }
+        .info-container {
+            text-align: center;
+            margin: 20px;
+            font-size: 18px;
+        }
+        nav ul {
+            display: flex;
+            justify-content: space-around;
+            padding: 0;
+            margin: 20px;
+            list-style: none;
+        }
+        nav ul li {
+            text-align: center;
+        }
+        nav ul li a {
+            text-decoration: none;
+            color: black;
+            font-size: 14px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        nav ul li img {
+            width: 60px;
+            height: 60px;
+            margin-bottom: 10px;
+        }
+        @media (max-width: 600px) {
+            .barcode-container {
+                padding: 15px;
+                margin: 10px;
+            }
+            nav ul li img {
+                width: 50px;
+                height: 50px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        TIMONEY
+    </header>
+    <main>
+        <div class="barcode-container">
+            <img id="barcode" src="barcode.jpg" alt="Campus Pay Barcode">
+            <button id="toggle-barcode">&gt;</button>
+            <div class="info-container">
+                <span>キャンパスペイ</span>
+                <p>残高：1,230円</p>
+                <p>ポイント：<span id="points-display">820ポイント</span></p>
+            </div>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="scan.html"><img src="scan.png" alt="Scan Icon">スキャン</a></li>
+                <li><a href="charge.html"><img src="charge.png" alt="Charge Icon">チャージ</a></li>
+                <li><a href="poikatu.html"><img src="money.png" alt="Poi Katsu Icon">ポイ活</a></li>
+                <li><a href="coupon.html"><img src="ticket.png" alt="Coupon Icon">クーポン</a></li>
+                <li><a href="syusseki.html"><img src="class.png" alt="Attendance Icon">出席</a></li>
+            </ul>
+        </nav>
+    </main>
+    <script>
+        const barcode = document.getElementById('barcode');
+        const toggleButton = document.getElementById('toggle-barcode');
+        let isCampusPay = true;
+
+        toggleButton.addEventListener('click', () => {
+            if (isCampusPay) {
+                barcode.src = 'barcode.jpg';
+                barcode.alt = 'PAYP Barcode';
+                toggleButton.textContent = '<';
+            } else {
+                barcode.src = 'barcode.jpg';
+                barcode.alt = 'Campus Pay Barcode';
+                toggleButton.textContent = '>';
+            }
+            isCampusPay = !isCampusPay;
+        });
+
+        // センサーAPIの実装（歩数計測のデモ）
+        let points = 820;
+        if ('LinearAccelerationSensor' in window) {
+            try {
+                const sensor = new LinearAccelerationSensor();
+                sensor.addEventListener('reading', () => {
+                    points += 0.1; // デモとして歩数に応じてポイント増加
+                    document.getElementById('points-display').textContent = `${points.toFixed(1)}ポイント`;
+                });
+                sensor.addEventListener('error', event => {
+                    console.error(event.error.name, event.error.message);
+                });
+                sensor.start();
+            } catch (err) {
+                alert('センサーの初期化中にエラーが発生しました: ' + err.message);
+            }
+        } else {
+            alert('このデバイスはセンサーAPIをサポートしていません。');
+        }
+    </script>
+</body>
+</html>
